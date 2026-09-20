@@ -92,21 +92,29 @@ mvn test
 ```
 .
 ├── README.md                  ← este arquivo
-└── docs/                      ← documentação
+├── banco.txt                  ← estado persistido do banco
+├── clientes.json              ← clientes persistidos
+├── mesAtual.txt               ← mês atual da simulação
+└── docs/                      ← documentação do trabalho
+    ├── Teste manual TestLink  ← PDF do teste manual utilizando TestLink
     └── ai/
          ├── AI-LOG.md         ← registro do uso de IA
 └── winxbank/                  ← sistema sob teste (Java + Maven)
     ├── pom.xml
     ├── README.md              ← documentação detalhada do WinxBank
-    └── src/br/winxbank
-            ├── Main.java
-            ├── exception/        ← exceções customizadas
-            ├── geradordedocumentos/  ← geração de extrato / informe
-            ├── random/           ← geração de números aleatórios
-            ├── repository/       ← persistência em arquivo (JSON / texto)
-            ├── sistemabancario/  ← Banco, Conta, ContaCorrente, ContaPoupanca, Cartao, CartaoCredito, Movimentacao
-            ├── sistemaclientes/  ← Cliente, ClienteWinx, RegistroDeClientes
-            └── tempo/            ← simulação do passar dos meses (Ano)
+    └── src/
+        ├── main/java/br/winxbank/
+        |        ├── Main.java
+        |        ├── exception/        ← exceções customizadas
+        |        ├── geradordedocumentos/  ← geração de extrato / informe
+        |        ├── random/           ← geração de números aleatórios
+        |        ├── repository/       ← persistência em arquivo (JSON / texto)
+        |        ├── sistemabancario/  ← Banco, Conta, ContaCorrente, ContaPoupanca, Cartao, CartaoCredito, Movimentacao
+        |        ├── sistemaclientes/  ← Cliente, ClienteWinx, RegistroDeClientes
+        |        └── tempo/            ← simulação do passar dos meses (Ano)
+        └── test/java/br/winxbank/
+                 ├── sistemabancario/  ← testes unitários do sistema bancário
+                 └── sistemaclientes/  ← testes unitários do sistema de clientes
 
 ```
 
@@ -116,7 +124,7 @@ mvn test
 
 | Membro | Responsabilidades |
 |--------|-------------------|
-| João Victor       |          |
+| João Victor       | [CartaoCredito.java](winxbank/src/test/java/br/winxbank/sistemabancario/CartaoCreditoTest.java) + Casos de teste manual da Classe CartaoCredito.java + TestLink + Plano de Testes |
 | Vinicius Gomes    |          |
 | Marcello Bimbatti |          |
 
