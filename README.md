@@ -13,6 +13,7 @@ Repositório do grupo Tela Azul para o trabalho prático da disciplina de Qualid
 - **Casos de teste unitários:** [winxbank/src/test/java/br/winxbank](winxbank/src/test/java/br/winxbank)
 - **Casos de teste manuais:** [Testes manuais](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit) + [TestLink](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/docs/Teste%20Manual%20TestLink%20CT002%20-%20Realizar%20compra%20com%20Cartao%20de%20cr%C3%A9dito.pdf)
 - **Bugs encontrados:** [Issues](https://github.com/VLPGomes/Trab_Tela_Azul/issues)
+- **Apresentação:** [Entrega 1](https://docs.google.com/presentation/d/1VC48kdokELuNO8g4aND4SimM0JrBxuKSh3BCZBXf8co/edit?usp=sharing)
 
 ### Entrega 2
 
