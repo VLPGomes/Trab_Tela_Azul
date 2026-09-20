@@ -31,3 +31,13 @@
 **Resultado**: A ferramenta sugeriu um código refatorado que quebrou a compilação ao instanciar o Singleton com new RegistroDeClientes()  \
 **Decisão**: **Rejeitado** a mudança após identificar a falha de compilação e mantida a chamada via RegistroDeClientes.getInstancia() \
 **Validação**: A execução do código gerado falhou na IDE durante a compilação
+
+3.\
+**Informação**: Ajuda na criação de testes unitários para a classe CartaoCredito \
+**Responsável**: João Victor \
+**Atividade**: Testes unitários  \
+**Ferramenta**: Gemini  \
+**Prompt/instrução**: "Você é um testador experimente de testes unitários. Quais cenários posso utilizar para gerar casos de testes para a classe Java CartaoCredito." \
+**Resultado**: A ferramenta forneceu cenários para criar os testes para a classe.  \
+**Decisão**: Utilizei os cenários para criar os casos de testes da classe CartaoCredito. \
+**Validação**: Testes validados com execução local no terminal.
