@@ -11,7 +11,7 @@ Repositório do grupo Tela Azul para o trabalho prático da disciplina de Qualid
 
 - **Plano de Teste:** [Plano de Teste](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit)
 - **Casos de teste unitários:**
-- **Casos de teste manuais:** [Testes manuais](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit) + [TestLink](docs/Teste Manual TestLink CT002 - Realizar compra com Cartao de crédito.pdf)
+- **Casos de teste manuais:** [Testes manuais](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit) + [TestLink](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/docs/Teste%20Manual%20TestLink%20CT002%20-%20Realizar%20compra%20com%20Cartao%20de%20cr%C3%A9dito.pdf)
 - **Bugs encontrados:**
 
 ### Entrega 2
