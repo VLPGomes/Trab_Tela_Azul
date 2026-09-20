@@ -21,3 +21,13 @@
 **Resultado**: A ferramenta gerou uma estrutura testes \
 **Decisão**: Aceitei a estrutura de testes \
 **Validação**: Execução local dos testes no terminal, validando que todos os 7 testes passaram  
+
+2.\
+**Informação**: Melhoria da classe RegistroDeClientes \
+**Responsável**: Marcello Bimbatti \
+**Atividade**: Tentativa de melhoria do código dos testes unitários de RegistroDeClientes  \
+**Ferramenta**: Gemini  \
+**Prompt/instrução**: Refatore os testes unitários da classe RegistroDeClientes para melhorar a estrutura dos casos de teste \
+**Resultado**: A ferramenta sugeriu um código refatorado que quebrou a compilação ao instanciar o Singleton com new RegistroDeClientes()  \
+**Decisão**: **Rejeitado** a mudança após identificar a falha de compilação e mantida a chamada via RegistroDeClientes.getInstancia() \
+**Validação**: A execução do código gerado falhou na IDE durante a compilação
