@@ -9,7 +9,7 @@ Repositório do grupo Tela Azul para o trabalho prático da disciplina de Qualid
 
 ### Entrega 1 (21/09/2026)
 
-- **Plano de Teste:**
+- **Plano de Teste:** [Plano de Teste](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit)
 - **Casos de teste unitários:**
 - **Casos de teste manuais:**
 - **Bugs encontrados:**
@@ -71,23 +71,58 @@ O WinxBank é um sistema bancário digital que simula as operações de um banco
 
 ### Compilar e executar
 
+A partir da raiz do repositório:
 
+```bash
+cd winxbank
+mvn spring-boot:run
+```
 
 ### Rodar os testes unitários
 
-
+```bash
+cd winxbank
+mvn test
+```
 
 ---
 
 ## Estrutura do Repositório
 
+```
+.
+├── README.md                  ← este arquivo
+└── docs/                      ← documentação
+    └── ai/
+         ├── AI-LOG.md         ← registro do uso de IA
+└── winxbank/                  ← sistema sob teste (Java + Maven)
+    ├── pom.xml
+    ├── README.md              ← documentação detalhada do WinxBank
+    └── src/br/winxbank
+            ├── Main.java
+            ├── exception/        ← exceções customizadas
+            ├── geradordedocumentos/  ← geração de extrato / informe
+            ├── random/           ← geração de números aleatórios
+            ├── repository/       ← persistência em arquivo (JSON / texto)
+            ├── sistemabancario/  ← Banco, Conta, ContaCorrente, ContaPoupanca, Cartao, CartaoCredito, Movimentacao
+            ├── sistemaclientes/  ← Cliente, ClienteWinx, RegistroDeClientes
+            └── tempo/            ← simulação do passar dos meses (Ano)
+
+```
+
 ---
 
 ## Equipe
+
+| Membro | Responsabilidades |
+|--------|-------------------|
+| João Victor       |          |
+| Vinicius Gomes    |          |
+| Marcello Bimbatti |          |
 
 ---
 
 ## Referências
 
-- [README detalhado do WinxBank]
+- [README detalhado do WinxBank](winxbank/README.md)
 - [Repositório original do projeto](https://github.com/repo-software-testing-courses/Sistema_Bancario_POO)
