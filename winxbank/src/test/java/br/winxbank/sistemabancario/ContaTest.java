@@ -91,9 +91,36 @@ class ContaTest {
     }
     
     @Test
+    void testPixInvalido() {
+        Conta contaDestino = new Conta(456, 500.0, null, 0.0) {
+            @Override
+            public void comprar(double valor) {
+                saldo -= valor;
+            }
+
+            @Override
+            public void movimentacaoBancaria(double valor) {
+                saldo += valor;
+            }
+        };
+        assertAll(
+       		() -> assertThrows(IllegalArgumentException.class, () -> conta.fazerPix(contaDestino, -100.0), "Pix não deveria receber valor negativo"),
+       		() -> assertThrows(IllegalArgumentException.class, () -> conta.fazerPix(contaDestino, 0.0), "Pix não deveria receber valor 0")
+        );
+    }
+    
+    @Test
     void testSaque() {
         conta.sacar(300.0);
         assertEquals(700.0, conta.getSaldo());
+    }
+    
+    @Test
+    void testSaqueInvalido() {
+    	assertAll(
+    		() -> assertThrows(IllegalArgumentException.class, () -> conta.sacar(-100.0), "Saque não deveria receber valor negativo"),
+    		() -> assertThrows(IllegalArgumentException.class, () -> conta.sacar(0.0), "Saque não deveria receber valor 0")
+    	);
     }
     
     @Test
@@ -101,6 +128,14 @@ class ContaTest {
         double valorDepositado = conta.depositar(500.0);
         assertEquals(500.0, valorDepositado);
         assertEquals(1500.0, conta.getSaldo());
+    }
+    
+    @Test
+    void testDepositoInvalido() {
+    	assertAll(
+    		() -> assertThrows(IllegalArgumentException.class, () -> conta.depositar(-100.0), "Depósito não deveria receber valor negativo"),
+    		() -> assertThrows(IllegalArgumentException.class, () -> conta.depositar(0.0), "Depósito não deveria receber valor 0")
+    	);
     }
 
     @Test
