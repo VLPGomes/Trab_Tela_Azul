@@ -11,8 +11,7 @@ class RegistroDeClientesTest {
 
     @BeforeEach
     void setUp() {
-        registro = RegistroDeClientes.getInstancia();
-        registro.limparListaDeClientes();
+        registro = new RegistroDeClientes();
     }
 
     @Test
@@ -24,7 +23,7 @@ class RegistroDeClientesTest {
     @Test
     void retornarFalsoCpfJaCadastrado() {
         Cliente cliente = new Cliente("carol", "200");
-        registro.getClientes().add(cliente);
+        registro.cadastrarCliente(cliente);
 
         boolean cpfLivre = registro.checarCpf("200");
         assertFalse(cpfLivre);
@@ -33,7 +32,7 @@ class RegistroDeClientesTest {
     @Test
     void buscarClientePorCpf() {
         Cliente cliente = new Cliente("Marcello", "999");
-        registro.getClientes().add(cliente);
+        registro.cadastrarCliente(cliente);
 
         Cliente resultado = registro.retornarCliente("999");
         assertNotNull(resultado);
@@ -43,20 +42,20 @@ class RegistroDeClientesTest {
     @Test
     void removerClienteComSucesso() {
         Cliente cliente = new Cliente("Marcello", "999");
-        registro.getClientes().add(cliente);
+        registro.cadastrarCliente(cliente);
 
         registro.removerCliente(cliente);
-        assertEquals(0, registro.getClientes().size());
+        assertTrue(registro.isListaVazia());
     }
 
     @Test
-    void atualizarDadosDoCliente() throws InterruptedException {
+    void atualizarDadosDoCliente() {
         Cliente clienteAntigo = new Cliente("Marcello Antigo", "999");
-        registro.getClientes().add(clienteAntigo);
+        registro.cadastrarCliente(clienteAntigo);
 
         Cliente clienteNovo = new Cliente("Marcello Atualizado", "999");
         registro.atualizarCliente(clienteNovo);
-
+        
         Cliente resultado = registro.retornarCliente("999");
         assertEquals("Marcello Atualizado", resultado.getNome());
     }
@@ -64,8 +63,8 @@ class RegistroDeClientesTest {
     @Test
     void manterInstanciaDeClienteWinx() {
         ClienteWinx clienteWinx = new ClienteWinx("Marcello ClienteWinx", "888", 0);
-        registro.getClientes().add(clienteWinx);
-
+        registro.cadastrarCliente(clienteWinx);
+        
         Cliente retornado = registro.retornarCliente("888");
         assertTrue(retornado instanceof ClienteWinx);
     }
