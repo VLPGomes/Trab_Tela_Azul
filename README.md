@@ -127,7 +127,7 @@ mvn test
 |--------|-------------------|
 | João Victor       | [CartaoCredito.java](winxbank/src/test/java/br/winxbank/sistemabancario/CartaoCreditoTest.java) + [Casos de teste manual da Classe CartaoCredito.java](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit?tab=t.0) + [TestLink](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/docs/Teste%20Manual%20TestLink%20CT002%20-%20Realizar%20compra%20com%20Cartao%20de%20cr%C3%A9dito.pdf) + [Plano de Testes](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit) |
 | Vinicius Gomes    | [Conta.java](winxbank/src/test/java/br/winxbank/sistemabancario/ContaTest.java) + [Casos de teste manual da classe Conta.java](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit?tab=t.0) + [Plano de Testes](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit)|
-| Marcello Bimbatti | [RegistroDeClientes](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/winxbank/src/test/java/br/winxbank/sistemaclientes/RegistroDeClientesTest.java)|
+| Marcello Bimbatti | [RegistroDeClientes.java](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/winxbank/src/test/java/br/winxbank/sistemaclientes/RegistroDeClientesTest.java) + [Casos de teste manual da classe RegistroDeClientes.java](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit?tab=t.0)|
 
 ---
 
