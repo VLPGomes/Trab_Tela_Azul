@@ -1,7 +1,10 @@
 package br.winxbank.sistemaclientes;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,6 +50,7 @@ class RegistroDeClientesTest {
 
         registro.removerCliente(cliente);
         assertEquals(0, registro.getClientes().size());
+        assertNull(registro.retornarCliente("999"));
     }
 
     @Test
@@ -58,6 +62,7 @@ class RegistroDeClientesTest {
         registro.atualizarCliente(clienteNovo);
 
         Cliente resultado = registro.retornarCliente("999");
+        assertNotNull(resultado);
         assertEquals("Marcello Atualizado", resultado.getNome());
     }
 
@@ -77,5 +82,36 @@ class RegistroDeClientesTest {
 
         registro.limparListaDeClientes();
         assertTrue(registro.getClientes().isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "   ", "00000000000"})
+    void buscarClientePorCpfInexistenteOuInvalido(String cpfInexistente) {
+        Cliente resultado = registro.retornarCliente(cpfInexistente);
+        assertNull(resultado);
+    }
+
+    @Test
+    void removerClienteInexistente() {
+        Cliente clienteExistente = new Cliente("Marcello", "999");
+        Cliente clienteNaoCadastrado = new Cliente("Outro", "111");
+        registro.getClientes().add(clienteExistente);
+
+        registro.removerCliente(clienteNaoCadastrado);
+        
+        assertEquals(1, registro.getClientes().size());
+        assertNotNull(registro.retornarCliente("999"));
+    }
+
+    @Test
+    void atualizarClienteInexistente() throws InterruptedException {
+        Cliente clienteExistente = new Cliente("Marcello", "999");
+        registro.getClientes().add(clienteExistente);
+
+        Cliente clienteNovoInexistente = new Cliente("Inexistente", "777");
+        registro.atualizarCliente(clienteNovoInexistente);
+
+        assertNull(registro.retornarCliente("777"));
+        assertEquals("Marcello", registro.retornarCliente("999").getNome());
     }
 }
