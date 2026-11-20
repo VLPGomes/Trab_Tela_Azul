@@ -88,6 +88,25 @@ class CartaoCreditoIntegracaoTest {
         }
     }
 
+    // [Alteração] Novo teste de integração para validar a cobrança de juros na virada de ano e evitar duplicidade com Ano e Banco reais.
+    @Test
+    void cobrarJurosNaViradaDeAnoGeraReceitaApenasUmaVezNoBanco() {
+        Ano.getInstancia().setMesAtual("Janeiro"); // índice 0
+        // Fatura de 100 aberta em Dezembro (índice 11)
+        CartaoCredito cartao = new CartaoCredito(100.0, 11, false, 2000.0, 1234, 123);
+
+        cartao.cobrarJurus();
+        cartao.cobrarJurus(); // segunda chamada no mesmo mês não deve duplicar juros nem receita
+
+        assertEquals(1275.0, cartao.getFatura(), DELTA);
+        assertEquals(1175.0, Banco.getInstancia().getReceitas(), DELTA);
+    }
+
+    private void limparEstado() {
+        Banco.getInstancia().despesas = 0;
+        Banco.getInstancia().receitas = 0;
+    }
+
     private void limparEstado() {
         Banco.getInstancia().despesas = 0;
         Banco.getInstancia().receitas = 0;
