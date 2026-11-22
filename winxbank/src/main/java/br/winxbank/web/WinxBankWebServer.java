@@ -47,6 +47,7 @@ public class WinxBankWebServer {
         Banco.getInstancia().receitas = 0;
         Banco.getInstancia().despesas = 0;
         Ano.getInstancia().setMesAtual("Abril");
+        RegistroDeClientes.getInstancia().limparListaDeClientes();
 
         Cartao cartaoDebito = new Cartao(1234, 123);
         this.cartaoCredito = new CartaoCredito(5678, 456); // limite inicial = 1000.0
