@@ -106,9 +106,4 @@ class CartaoCreditoIntegracaoTest {
         Banco.getInstancia().despesas = 0;
         Banco.getInstancia().receitas = 0;
     }
-
-    private void limparEstado() {
-        Banco.getInstancia().despesas = 0;
-        Banco.getInstancia().receitas = 0;
-    }
 }
