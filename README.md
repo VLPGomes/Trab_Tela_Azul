@@ -23,6 +23,7 @@ Repositório do grupo Tela Azul para o trabalho prático da disciplina de Qualid
 - **Atributos de Qualidade (ISO 25010):** [Avaliação ISO 25010](https://docs.google.com/document/d/17hhLL0Bd4Te45kgPSXmGGxRsbgAk8YM6T4qJXkYfxb0/edit?usp=sharing)
 - **Relatórios de utilização de técnicas Funcional, Estrutural e Baseada em Defeitos:** [João Victor (CartaoCredito.java)](https://docs.google.com/document/d/100JvwpEPEaAYYATW6yy2Z-PnM8fqqdeNlNTKp-oroWc/edit?usp=sharing)
 - **Relatórios de inspeção do código-fonte:** [João Victor (CartaoCredito.java e Banco.java)](https://docs.google.com/document/d/1wFG-GTlbaeUA6yRpjKyRNDRHjQEvhFTJ-IKTkYXH3Ys/edit?usp=sharing)
+- **Relatório Resumo de Testes:** [Marcello Bimbatti Mazzochi (Classe RegistroDeClientes)](https://docs.google.com/document/d/1EgyZKHwM_LwszVowrUK35AMI7ZQ2D_NzgWNwCpwXvMs/edit?usp=sharing)
 
 ---
 
