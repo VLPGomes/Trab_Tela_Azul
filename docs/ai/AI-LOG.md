@@ -81,3 +81,33 @@
 **Resultado**: A ferramenta sugeriu ajustes na Introdução, Escopo, Metodologia (fases, técnicas e completude), tabela de ferramentas, acrônimos e estrutura do README. \
 **Decisão**: Apliquei as revisões no Google Docs (v2.0) e atualizei o README.md no GitHub. \
 **Validação**: Revisão crítica de cada seção frente aos critérios da Entrega 2, correção de inconsistências conceituais (como o uso de dublês nos testes unitários) e conferência dos links e caminhos do repositório.
+
+8.\
+**Informação**: Expansão dos testes unitários de RegistroDeClientes para cobertura estrutural e mutação \
+**Responsável**: Marcello Bimbatti Mazzochi\
+**Atividade**: Testes unitários, cobertura de arestas e teste de mutação (PITest) \
+**Ferramenta**: Gemini \
+**Prompt/instrução**: "Análise o arquivo RegistroDeClientesTest.java) para realizar testes de mutação, estrutural e SonarQube." \
+**Resultado**: A ferramenta sugeriu a expansão da suíte com testes parametrizados (@ParameterizedTest) para CPFs vazios/inválidos, cenários de remoção e atualização de clientes inexistentes, além dos comandos Maven para PITest e SonarQube. \
+**Decisão**: Aceitei os testes parametrizados e cenários de borda.
+**Validação**: Análise do relatório HTML do JaCoCo para confirmar o percurso em todas as arestas dos laços/condicionais e inspeção dos mutantes gerados pelo PITest (verificando quais mutantes sobreviveram e reforçando os oráculos de teste para eliminar mutações de remoção e alteração de estado).
+
+9.\
+**Informação**: Revisão dos testes de integração, isolamento com mocks e testes de sistema \
+**Responsável**: Marcello Bimbatti Mazzochi \
+**Atividade**: Testes de integração, Mockito e testes de sistema \
+**Ferramenta**: Gemini \
+**Prompt/instrução**: "Análise os códigos AtendimentoServiceTest, ClienteContaIntegracaoTest, RegistroDeClientesTest e WinxBankSystemTest." \
+**Resultado**: A ferramenta apontou que AtendimentoServiceTest invocava o mock diretamente sem passar pela classe real e listou as pendências documentais. \
+**Decisão**: Corrigi a asserção no teste de integração e reestruturei os testes com Mockito em `RegistroDeClientesMockTest.java` para validar o isolamento real de dependências. \
+**Validação**: Revisão dos testes das classes Cliente, ClienteWinx e RegistroDeClientes. Garanti que os resultados batiam com os dados criados nos testes, que os mocks (Mockito) estão simulando corretamente as dependências reais e que a lista de clientes é limpa (limparListaDeClientes()) antes de cada novo teste para não misturar os dados.
+
+10.\
+**Informação**: Implementação de testes de sistema (Selenium) e requisito não funcional de desempenho para Clientes \
+**Responsável**: Marcello Bimbatti Mazzochi \
+**Atividade**: Testes de sistema (E2E) com Selenium e RNF de desempenho (ISO/IEC 25010) \
+**Ferramenta**: Gemini \
+**Prompt/instrução**: "Adaptar o arquivo WinxBankWebServer.java e desenvolver testes de sistema para Clientes. \
+**Resultado**: A ferramenta adaptou o servidor web (`WinxBankWebServer.java`) com endpoints de gestão de clientes sem bloqueio de `Scanner(System.in)` e gerou o teste de sistema `ClienteSeleniumTest.java` . \
+**Decisão**: Aceitei a solução ajustando as rotas HTML para o padrão `formaction` já usado no servidor do grupo e definindo a porta dedicada `8086` para evitar conflito com a porta `8085` do `WinxBankSeleniumTest`. 
+**Validação**: Testei a página web do WinxBankWebServer para confirmar que os formulários enviam os dados corretamente para o RegistroDeClientes sem travar. Também conferi se as portas 8085 e 8086 não interferem uma na outra e medi a velocidade de resposta do servidor de acordo com a meta da ISO/IEC 25010.
