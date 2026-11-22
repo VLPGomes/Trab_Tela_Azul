@@ -3,6 +3,7 @@ package br.winxbank.sistemabancario;
 import br.winxbank.tempo.Ano;
 
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
 - @author Carol
@@ -10,8 +11,8 @@ import java.util.Scanner;
  */
 public class CartaoCredito extends Cartao implements OperacoesAutomaticas{
 
+    private static final Logger LOGGER = Logger.getLogger(CartaoCredito.class.getName());
     private double fatura;
-    private String mesDaFatura;
     private int indexMesDaFatura;
     private boolean faturaPaga;
     private double limite;
@@ -61,7 +62,6 @@ public class CartaoCredito extends Cartao implements OperacoesAutomaticas{
         if(valor + this.fatura <= this.limite){
             setFatura(valor);
             this.indexMesDaFatura = Ano.getInstancia().getIndexMesAtual();
-            this.mesDaFatura = Ano.getInstancia().getMesAtual();
             return true;
         }
         return false;
@@ -71,8 +71,9 @@ public class CartaoCredito extends Cartao implements OperacoesAutomaticas{
 - Método responsável por ajustar o limite do cartão
      */
     public void ajustarLimite(){
+        @SuppressWarnings("resource")
         Scanner sc = new Scanner(System.in);
-        System.out.println("Digite o valor do limite do seu cartão que deseja ajustar: ");
+        LOGGER.info("Digite o valor do limite do seu cartão que deseja ajustar: ");
         double novoLimite = sc.nextDouble();
         ajustarLimite(novoLimite); // [Alteração] Delega para o método desacoplado com validações
 
@@ -123,7 +124,7 @@ public class CartaoCredito extends Cartao implements OperacoesAutomaticas{
         int mesAtual = Ano.getInstancia().getIndexMesAtual();
         boolean virouMesOuAno = mesAtual > this.indexMesDaFatura || (this.indexMesDaFatura == 11 && mesAtual == 0);
 
-        if (this.faturaPaga == false && this.fatura > 0 && virouMesOuAno){
+        if (!this.faturaPaga && this.fatura > 0 && virouMesOuAno){
             double faturaAnterior = this.fatura;
             this.fatura *= taxaJurus;
             this.indexMesDaFatura = mesAtual; // [Alteração] Atualiza o mês de referência para evitar cobrança duplicada no mesmo mês
