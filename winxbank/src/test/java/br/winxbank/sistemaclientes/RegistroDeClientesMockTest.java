@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -22,20 +24,29 @@ class RegistroDeClientesMockTest {
 
     private RegistroDeClientes registro;
     private final InputStream systemInOriginal = System.in;
+    private final PrintStream systemOutOriginal = System.out;
+    private ByteArrayOutputStream saidaCapturada;
 
     @BeforeEach
     void setUp() {
         registro = RegistroDeClientes.getInstancia();
         registro.limparListaDeClientes();
+        saidaCapturada = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(saidaCapturada, true, StandardCharsets.UTF_8));
     }
 
     @AfterEach
     void tearDown() {
         System.setIn(systemInOriginal);
+        System.setOut(systemOutOriginal);
     }
 
     private void simularEntradaUsuario(String dados) {
         System.setIn(new ByteArrayInputStream(dados.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private String obterSaidaConsole() {
+        return saidaCapturada.toString(StandardCharsets.UTF_8);
     }
 
     @Test
@@ -60,6 +71,11 @@ class RegistroDeClientesMockTest {
             assertNotNull(salvo);
             assertEquals("Marcello Comum", salvo.getNome());
             assertFalse(salvo instanceof ClienteWinx);
+            assertTrue(salvo.getContas().contains(contaCorrenteMock));
+
+            String saida = obterSaidaConsole();
+            assertTrue(saida.contains("Digite o nome:"));
+            assertTrue(saida.contains("Digite o cpf:"));
         }
     }
 
@@ -84,6 +100,8 @@ class RegistroDeClientesMockTest {
             Cliente salvo = registro.retornarCliente("55566677788");
             assertNotNull(salvo);
             assertInstanceOf(ClienteWinx.class, salvo);
+            assertTrue(salvo.getContas().contains(contaPoupancaMock));
+            assertTrue(obterSaidaConsole().contains("Parabéns, você tem direito a ser ClienteWinx!"));
         }
     }
 
@@ -102,10 +120,13 @@ class RegistroDeClientesMockTest {
 
             registro.cadastrarCliente();
 
+            verify(contaPoupancaMock, times(1)).setExtrato(any(Movimentacao.class));
             verify(contaPoupancaMock, times(1)).setInformeRendimento(any(Movimentacao.class));
+
             Cliente salvo = registro.retornarCliente("22233344455");
             assertNotNull(salvo);
             assertFalse(salvo instanceof ClienteWinx);
+            assertTrue(salvo.getContas().contains(contaPoupancaMock));
         }
     }
 
@@ -123,6 +144,7 @@ class RegistroDeClientesMockTest {
 
             verify(bancoMock, never()).abrirNovaConta();
             assertEquals(1, registro.getClientes().size());
+            assertTrue(obterSaidaConsole().contains("Usuario nao pode ser criado. CPF ja existente no registro."));
         }
     }
 
@@ -142,15 +164,47 @@ class RegistroDeClientesMockTest {
         lote.add(clienteWinx);
         registro.setClientes(lote);
 
-        assertDoesNotThrow(() -> {
-            registro.visualizarDetalhesDoCliente("10101010101");
-            registro.visualizarDetalhesDoCliente("20202020202");
-            registro.visualizarDetalhesDoCliente("00000000000");
-            registro.printarListaDeClientes();
-        });
+        // 1. CPF inexistente não deve imprimir nada
+        saidaCapturada.reset();
+        registro.visualizarDetalhesDoCliente("00000000000");
+        assertEquals("", obterSaidaConsole());
 
-        verify(ccMock, atLeastOnce()).getCartaoCredito();
-        verify(cpMock, atLeastOnce()).getTipoDaConta();
+        // 2. Detalhes de Cliente comum
+        saidaCapturada.reset();
+        registro.visualizarDetalhesDoCliente("10101010101");
+        String saidaComum = obterSaidaConsole();
+        assertTrue(saidaComum.contains("Nome: Cliente Comum| CPF: 10101010101"));
+        assertTrue(saidaComum.contains("Cartao Credito no:"));
+
+        // 3. Detalhes de ClienteWinx
+        saidaCapturada.reset();
+        registro.visualizarDetalhesDoCliente("20202020202");
+        String saidaWinx = obterSaidaConsole();
+        assertTrue(saidaWinx.contains("Nome: Cliente Winx | CPF: 20202020202 | Pontos por compra: 50"));
+        assertTrue(saidaWinx.contains("Cartao Debito no:"));
+
+        // 4. Listagem geral
+        saidaCapturada.reset();
+        registro.printarListaDeClientes();
+        String saidaLista = obterSaidaConsole();
+        assertTrue(saidaLista.contains("------------------ Clientes --------------------"));
+        assertTrue(saidaLista.contains("Nome: Cliente Comum| CPF: 10101010101"));
+        assertTrue(saidaLista.contains("Nome: Cliente Winx | CPF: 20202020202 | Pontos por compra: 50"));
+        assertTrue(saidaLista.contains("Cartao Credito no:"));
+        assertTrue(saidaLista.contains("------------------------------------------------"));
+    }
+
+    @Test
+    void deveExibirMensagensAoAtualizarERemoverCliente() throws InterruptedException {
+        Cliente cliente = new Cliente("Marcello", "33344455566");
+        registro.getClientes().add(cliente);
+
+        registro.atualizarCliente(new Cliente("Marcello Novo", "33344455566"));
+        assertTrue(obterSaidaConsole().contains("Seu usuario está sendo atualizado..."));
+
+        saidaCapturada.reset();
+        registro.removerCliente(cliente);
+        assertTrue(obterSaidaConsole().contains("Seu usuario está sendo apagado..."));
     }
 
     @Test
@@ -158,4 +212,4 @@ class RegistroDeClientesMockTest {
         registro.getClientes().add(null);
         assertThrows(NullPointerException.class, () -> registro.retornarCliente("123"));
     }
-}
+}	
