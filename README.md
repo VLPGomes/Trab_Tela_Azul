@@ -4,7 +4,7 @@ Repositório do grupo Tela Azul para o trabalho prático da disciplina de Qualid
 
 ---
 
-## Documentaçao de Teste
+## Documentação de Teste
 
 
 ### Entrega 1 (21/09/2026)
@@ -21,7 +21,8 @@ Repositório do grupo Tela Azul para o trabalho prático da disciplina de Qualid
 - **Testes de Sistema:** [winxbank/src/test/java/br/winxbank/sistema](winxbank/src/test/java/br/winxbank/sistema)
 - **RFs e RNFs Testes de Sistema:** [RFs e RNFs - Teste de Sistema](https://docs.google.com/document/d/1sYhnDkzh3YbzbHsEp3F1ZYooMfrO3jZW-jU6qv4AWWA/edit?usp=sharing)
 - **Atributos de Qualidade (ISO 25010):** [Avaliação ISO 25010](https://docs.google.com/document/d/17hhLL0Bd4Te45kgPSXmGGxRsbgAk8YM6T4qJXkYfxb0/edit?usp=sharing)
-- 
+- **Relatórios de utilização de técnicas Funcional, Estrutural e Baseada em Defeitos:** [João Victor (CartaoCredito.java)](https://docs.google.com/document/d/100JvwpEPEaAYYATW6yy2Z-PnM8fqqdeNlNTKp-oroWc/edit?usp=sharing)
+- **Relatórios de inspeção do código-fonte:** [João Victor (CartaoCredito.java e Banco.java)](https://docs.google.com/document/d/1wFG-GTlbaeUA6yRpjKyRNDRHjQEvhFTJ-IKTkYXH3Ys/edit?usp=sharing)
 
 ---
 
@@ -78,28 +79,79 @@ O WinxBank é um sistema bancário digital que simula as operações de um banco
 
 ### Compilar e executar
 
-A partir da raiz do repositório:
+Todos os comandos abaixo devem ser executados a partir do diretório 'winxbank/':
 
 ```bash
 cd winxbank
-mvn spring-boot:run
 ```
 
-### Rodar os testes
+### Executar os testes
 
-Executar toda a suíte de testes (unitários, integração e sistema)
+Executar toda a suíte de testes e gerar relatório de cobertura (JaCoCo) em winxbank/target/site/jacoco/index.html.
 
 ```bash
-cd winxbank
-mvn test
+mvn clean test
+mvn jacoco:report
 ```
+* O mvn jacoco:report garante a geração do HTML mesmo caso algum teste falhe.
 
-Executar apenas os testes de sistema (Selenium):
+### Executar testes por módulo / integrante
+
+Módulo CartaoCredito (Unitários e Integração)
 
 ```bash
-cd winxbank
-mvn test -Dtest=WinxBankSeleniumTest
+mvn clean test "-Dtest=CartaoCreditoTest,CartaoCreditoIntegracaoTest"
 ```
+
+Módulo Conta (Unitários)
+
+```bash
+mvn clean test "-Dtest=ContaTest"
+```
+
+Módulo RegistroDeClientes e Cliente (Unitários, Mocks, Integração e Sistema)
+
+```bash
+mvn clean test "-Dtest=RegistroDeClientesTest,RegistroDeClientesMockTest,ClienteContaIntegracaoTest,WinxBankSystemTest"
+```
+
+Testes de Interface / Sistema (Selenium)
+
+```bash
+mvn clean test "-Dtest=WinxBankSeleniumTest,ClienteSeleniumTest"
+```
+
+### Executar testes de mutação (PITest)
+
+Projeto Completo
+
+```bash
+mvn test-compile pitest:mutationCoverage
+```
+
+#### Por classe específica
+
+CartaoCredito
+
+```bash
+mvn test-compile pitest:mutationCoverage "-DtargetClasses=br.winxbank.sistemabancario.CartaoCredito" "-DtargetTests=br.winxbank.sistemabancario.*CartaoCredito*Test"
+```
+
+Conta
+
+```bash
+mvn test-compile pitest:mutationCoverage "-DtargetClasses=br.winxbank.sistemabancario.Conta" "-DtargetTests=br.winxbank.sistemabancario.ContaTest"
+```
+
+RegistroDeClientes
+
+```bash
+mvn test-compile pitest:mutationCoverage "-DtargetClasses=br.winxbank.sistemaclientes.RegistroDeClientes" "-DtargetTests=br.winxbank.sistemaclientes.*RegistroDeClientes*Test"
+```
+
+* Relatório de mutação (PITest) gerado em 'winxbank/target/pit-reports/index.html'
+
+
 ---
 
 ## Estrutura do Repositório
