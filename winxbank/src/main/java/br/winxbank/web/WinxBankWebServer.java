@@ -4,6 +4,8 @@ import br.winxbank.sistemabancario.Banco;
 import br.winxbank.sistemabancario.Cartao;
 import br.winxbank.sistemabancario.CartaoCredito;
 import br.winxbank.sistemabancario.ContaCorrente;
+import br.winxbank.sistemaclientes.Cliente;
+import br.winxbank.sistemaclientes.RegistroDeClientes;
 import br.winxbank.tempo.Ano;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -23,6 +25,7 @@ public class WinxBankWebServer {
     private ContaCorrente conta;
     private CartaoCredito cartaoCredito;
     private String ultimaMensagem = "Bem-vindo ao WinxBank";
+    private String infoCliente = "";
 
     public void iniciar(int porta) throws IOException {
         resetarEstado();
@@ -32,6 +35,9 @@ public class WinxBankWebServer {
         server.createContext("/comprar-credito", this::handleComprarCredito);
         server.createContext("/pagar-fatura", this::handlePagarFatura);
         server.createContext("/virar-mes", this::handleVirarMes);
+        server.createContext("/cadastrar-cliente", this::handleCadastrarCliente);
+        server.createContext("/buscar-cliente", this::handleBuscarCliente);
+        server.createContext("/remover-cliente", this::handleRemoverCliente);
 
         server.setExecutor(null);
         server.start();
@@ -47,12 +53,13 @@ public class WinxBankWebServer {
         Banco.getInstancia().receitas = 0;
         Banco.getInstancia().despesas = 0;
         Ano.getInstancia().setMesAtual("Abril");
-        RegistroDeClientes.getInstancia().limparListaDeClientes();
 
         Cartao cartaoDebito = new Cartao(1234, 123);
         this.cartaoCredito = new CartaoCredito(5678, 456); // limite inicial = 1000.0
         this.conta = new ContaCorrente(1001, 1000.0, cartaoDebito, 0.0, cartaoCredito);
         this.ultimaMensagem = "Bem-vindo ao WinxBank";
+        this.infoCliente = "";
+        RegistroDeClientes.getInstancia().limparListaDeClientes();
     }
 
     private void handlePaginaInicial(HttpExchange exchange) throws IOException {
@@ -96,6 +103,58 @@ public class WinxBankWebServer {
         redirecionarParaInicio(exchange);
     }
 
+    private void handleCadastrarCliente(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            Map<String, String> params = lerFormulario(exchange);
+            String nome = params.getOrDefault("nome", "");
+            String cpf = params.getOrDefault("cpf", "");
+            RegistroDeClientes registro = RegistroDeClientes.getInstancia();
+
+            if (!cpf.isBlank() && registro.checarCpf(cpf)) {
+                registro.getClientes().add(new Cliente(nome, cpf));
+                ultimaMensagem = "Cliente cadastrado com sucesso!";
+            } else {
+                ultimaMensagem = "Erro: CPF já cadastrado.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handleBuscarCliente(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            Map<String, String> params = lerFormulario(exchange);
+            String cpf = params.getOrDefault("cpf", "");
+            Cliente encontrado = RegistroDeClientes.getInstancia().retornarCliente(cpf);
+
+            if (encontrado != null) {
+                infoCliente = encontrado.getNome() + " - " + encontrado.getClass().getSimpleName();
+                ultimaMensagem = "Cliente encontrado!";
+            } else {
+                infoCliente = "";
+                ultimaMensagem = "Cliente não encontrado.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handleRemoverCliente(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            Map<String, String> params = lerFormulario(exchange);
+            String cpf = params.getOrDefault("cpf", "");
+            RegistroDeClientes registro = RegistroDeClientes.getInstancia();
+            Cliente paraRemover = registro.retornarCliente(cpf);
+
+            if (paraRemover != null) {
+                registro.removerCliente(paraRemover);
+                infoCliente = "";
+                ultimaMensagem = "Cliente removido com sucesso!";
+            } else {
+                ultimaMensagem = "Cliente não encontrado.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
     private String gerarHtml() {
         return """
                 <!DOCTYPE html>
@@ -128,13 +187,25 @@ public class WinxBankWebServer {
                     <form method="POST" action="/virar-mes">
                         <button id="btn-virar-mes" type="submit">Virar Mês e Cobrar Juros</button>
                     </form>
+
+                    <hr>
+                    <h3>Gestão de Clientes</h3>
+                    <form method="POST" action="/cadastrar-cliente">
+                        <input id="input-nome" name="nome" type="text" placeholder="Nome do cliente">
+                        <input id="input-cpf" name="cpf" type="text" placeholder="CPF">
+                        <button id="btn-cadastrar" type="submit">Cadastrar</button>
+                        <button id="btn-buscar" type="submit" formaction="/buscar-cliente">Buscar</button>
+                        <button id="btn-remover" type="submit" formaction="/remover-cliente">Remover</button>
+                    </form>
+                    <p>Cliente: <span id="cliente-info">%s</span></p>
                 </body>
                 </html>
                 """.formatted(
                 ultimaMensagem,
                 String.format(Locale.US, "%.2f", conta.getSaldo()),
                 String.format(Locale.US, "%.2f", cartaoCredito.getFatura()),
-                String.format(Locale.US, "%.2f", Banco.getInstancia().getReceitas())
+                String.format(Locale.US, "%.2f", Banco.getInstancia().getReceitas()),
+                infoCliente
         );
     }
 
