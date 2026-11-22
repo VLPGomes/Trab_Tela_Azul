@@ -2,10 +2,10 @@ package br.winxbank.sistemaclientes;
 
 import br.winxbank.sistemabancario.*;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author Natália
@@ -13,8 +13,12 @@ import java.text.DecimalFormat;
  */
 public class RegistroDeClientes {
 
+    private static final String LABEL_NOME = "Nome: ";
+    private static final String LABEL_CONTAS = "\nContas:";
+    private static final String LABEL_CSV = "| csv: ";
+
     private static RegistroDeClientes instancia;
-    private ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+    private final ArrayList<Cliente> clientes = new ArrayList<>();
 
     /**
      * Este método é responsável por cadastrar um cliente no registro de clientes.
@@ -105,10 +109,10 @@ public class RegistroDeClientes {
     public void visualizarContas(Cliente cliente){
         for(Conta conta : cliente.getContas()){
             if(conta.getClass() == ContaPoupanca.class){
-                System.out.println("[ Conta" + ((ContaPoupanca) conta).getTipoDaConta() + " no: " + conta.getNumeroConta() + " | Saldo: " + new DecimalFormat("0.00").format( conta.getSaldo()) + " | DividaEmprestimo: " + new DecimalFormat("0.00").format(conta.getDividaDeEmprestimo()) + " | Cartao Debito no: " + conta.getCartao().getNumero() +"| csv: "+ conta.getCartao().getCsv() + " ]");
+                System.out.println("[ Conta" + ((ContaPoupanca) conta).getTipoDaConta() + " no: " + conta.getNumeroConta() + " | Saldo: " + new DecimalFormat("0.00").format( conta.getSaldo()) + " | DividaEmprestimo: " + new DecimalFormat("0.00").format(conta.getDividaDeEmprestimo()) + " | Cartao Debito no: " + conta.getCartao().getNumero() + LABEL_CSV + conta.getCartao().getCsv() + " ]");
             }
             else{
-                System.out.println("[ Conta" + ((ContaCorrente) conta).getTipoDaConta() + "no: " + conta.getNumeroConta() + " | Saldo: " + new DecimalFormat("0.00").format(conta.getSaldo()) + " | DividaEmprestimo: " + new DecimalFormat("0.00").format(conta.getDividaDeEmprestimo()) + " | Cartao Debito no: " + conta.getCartao().getNumero() +"| csv: "+ conta.getCartao().getCsv() + " | Cartao Credito no: " + ((ContaCorrente) conta).getCartaoCredito().getNumero() + "| csv: "+ ((ContaCorrente) conta).getCartaoCredito().getCsv() + "| fatura: "+  new DecimalFormat("0.00").format(((ContaCorrente) conta).getCartaoCredito().getFatura()) +" ]");
+                System.out.println("[ Conta" + ((ContaCorrente) conta).getTipoDaConta() + "no: " + conta.getNumeroConta() + " | Saldo: " + new DecimalFormat("0.00").format(conta.getSaldo()) + " | DividaEmprestimo: " + new DecimalFormat("0.00").format(conta.getDividaDeEmprestimo()) + " | Cartao Debito no: " + conta.getCartao().getNumero() + LABEL_CSV + conta.getCartao().getCsv() + " | Cartao Credito no: " + ((ContaCorrente) conta).getCartaoCredito().getNumero() + LABEL_CSV + ((ContaCorrente) conta).getCartaoCredito().getCsv() + "| fatura: "+  new DecimalFormat("0.00").format(((ContaCorrente) conta).getCartaoCredito().getFatura()) +" ]");
             }
         }
     }
@@ -120,11 +124,11 @@ public class RegistroDeClientes {
     public void visualizarDetalhesDoCliente(String cpf){
         for(Cliente cliente : clientes){
             if(cliente.getClass() == ClienteWinx.class && cliente.cpf.equals(cpf)){
-                System.out.println("Nome: " + cliente.getNome() + " | CPF: " + cliente.getCpf() + " | Pontos por compra: " + ((ClienteWinx) cliente).getPontosDeCompra() + "\nContas:");
+                System.out.println(LABEL_NOME + cliente.getNome() + " | CPF: " + cliente.getCpf() + " | Pontos por compra: " + ((ClienteWinx) cliente).getPontosDeCompra() + LABEL_CONTAS);
                 visualizarContas(cliente);
             }
             else if(cliente.getClass() == Cliente.class && cliente.cpf.equals(cpf)){
-                System.out.println("Nome: " + cliente.getNome() + "| CPF: " + cliente.getCpf() + "\nContas:");
+                System.out.println(LABEL_NOME + cliente.getNome() + "| CPF: " + cliente.getCpf() + LABEL_CONTAS);
                 visualizarContas(cliente);
             }
         }
@@ -154,10 +158,10 @@ public class RegistroDeClientes {
         System.out.println("------------------ Clientes --------------------");
         for(Cliente cliente : clientes){
             if(cliente.getClass() == ClienteWinx.class){
-                System.out.println("Nome: " + cliente.getNome() + " | CPF: " + cliente.getCpf() + " | Pontos por compra: " + ((ClienteWinx) cliente).getPontosDeCompra() + "\nContas:");
+                System.out.println(LABEL_NOME + cliente.getNome() + " | CPF: " + cliente.getCpf() + " | Pontos por compra: " + ((ClienteWinx) cliente).getPontosDeCompra() + LABEL_CONTAS);
             }
             else if(cliente.getClass() == Cliente.class){
-                System.out.println("Nome: " + cliente.getNome() + "| CPF: " + cliente.getCpf() + "\nContas:");
+                System.out.println(LABEL_NOME + cliente.getNome() + "| CPF: " + cliente.getCpf() + LABEL_CONTAS);
 
             }
             visualizarContas(cliente);
@@ -174,13 +178,12 @@ public class RegistroDeClientes {
     }
 
     /**
-     * Método responsável por adicionar uma coleção inteira ao atributo do tipo ArrayList de clientes da classe para carregar dados registrados em um arquivo de outras vezes que o programa foi executado.
+     * Método responsável por adicionar uma coleção inteira ao atributo do tipo List de clientes da classe para carregar dados registrados em um arquivo de outras vezes que o programa foi executado.
      * @param clientes
      */
-    public void setClientes(ArrayList<Cliente> clientes) {
+    public void setClientes(List<Cliente> clientes) {
         this.clientes.addAll(clientes);
     }
-
 
     public ArrayList<Cliente> getClientes() {
         return clientes;
