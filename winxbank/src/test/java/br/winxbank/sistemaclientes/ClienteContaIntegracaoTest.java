@@ -19,7 +19,7 @@ class ClienteContaIntegracaoTest {
     @Test
     @DisplayName("Cadastrar ClienteWinx e verificar persistência dos dados no registro")
     void integraRegistroClienteGerenciaSaldo() {
-        ClienteWinx cliente = new ClienteWinx("Marcello Integracao", "99988877700", 100);
+        ClienteWinx cliente = new ClienteWinx("Marcello", "99988877700", 100);
         registro.getClientes().add(cliente);
 
         Cliente clienteRecuperado = registro.retornarCliente("99988877700");
