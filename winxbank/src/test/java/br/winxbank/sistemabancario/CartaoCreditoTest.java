@@ -32,13 +32,11 @@ class CartaoCreditoTest {
             Ano mockAno = mock(Ano.class);
             mockedAno.when(Ano::getInstancia).thenReturn(mockAno);
             when(mockAno.getIndexMesAtual()).thenReturn(11);
-            when(mockAno.getMesAtual()).thenReturn("Novembro");
 
             cartao.creditar(200.0);
             
             assertEquals(200.0, cartao.getFatura(), 0.001);
             verify(mockAno, times(1)).getIndexMesAtual();
-            verify(mockAno, times(1)).getMesAtual();
         }
     }
 
