@@ -4,6 +4,8 @@ import br.winxbank.sistemabancario.Banco;
 import br.winxbank.sistemabancario.Cartao;
 import br.winxbank.sistemabancario.CartaoCredito;
 import br.winxbank.sistemabancario.ContaCorrente;
+import br.winxbank.sistemabancario.ContaPoupanca;
+import br.winxbank.sistemabancario.Movimentacao;
 import br.winxbank.sistemaclientes.Cliente;
 import br.winxbank.sistemaclientes.RegistroDeClientes;
 import br.winxbank.tempo.Ano;
@@ -24,6 +26,7 @@ public class WinxBankWebServer {
     private HttpServer server;
     private ContaCorrente conta;
     private CartaoCredito cartaoCredito;
+    private ContaPoupanca poupanca;
     private String ultimaMensagem = "Bem-vindo ao WinxBank";
     private String infoCliente = "";
 
@@ -38,6 +41,13 @@ public class WinxBankWebServer {
         server.createContext("/cadastrar-cliente", this::handleCadastrarCliente);
         server.createContext("/buscar-cliente", this::handleBuscarCliente);
         server.createContext("/remover-cliente", this::handleRemoverCliente);
+        server.createContext("/depositar", this::handleDepositar);
+        server.createContext("/sacar", this::handleSacar);
+        server.createContext("/pix", this::handlePix);
+        server.createContext("/emprestimo", this::handleEmprestimo);
+        server.createContext("/pagar-emprestimo", this::handlePagarEmprestimo);
+        server.createContext("/depositar-poupanca", this::handleDepositarPoupanca);
+        server.createContext("/rendimento-poupanca", this::handleRendimentoPoupanca);
 
         server.setExecutor(null);
         server.start();
@@ -57,6 +67,7 @@ public class WinxBankWebServer {
         Cartao cartaoDebito = new Cartao(1234, 123);
         this.cartaoCredito = new CartaoCredito(5678, 456); // limite inicial = 1000.0
         this.conta = new ContaCorrente(1001, 1000.0, cartaoDebito, 0.0, cartaoCredito);
+        this.poupanca = new ContaPoupanca(1002, 500.0, new Cartao(4321, 321), 0.0);
         this.ultimaMensagem = "Bem-vindo ao WinxBank";
         this.infoCliente = "";
         RegistroDeClientes.getInstancia().limparListaDeClientes();
@@ -155,6 +166,126 @@ public class WinxBankWebServer {
         redirecionarParaInicio(exchange);
     }
 
+    // Operações adicionais: mantêm os handlers originais intactos.
+    private double valorPositivo(HttpExchange exchange) throws IOException {
+        String texto = lerFormulario(exchange).getOrDefault("valor", "");
+        double valor = Double.parseDouble(texto.replace(',', '.'));
+        if (!Double.isFinite(valor) || valor <= 0) {
+            throw new IllegalArgumentException("Informe um valor positivo.");
+        }
+        return valor;
+    }
+
+    private void handleDepositar(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                double valor = valorPositivo(exchange);
+                conta.depositar(valor);
+                conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.ENTRADA));
+                ultimaMensagem = "Depósito realizado!";
+            } catch (IllegalArgumentException e) {
+                ultimaMensagem = "Depósito recusado: valor inválido.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handleSacar(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                double valor = valorPositivo(exchange);
+                if (valor > conta.getSaldo()) {
+                    ultimaMensagem = "Saque recusado: saldo insuficiente.";
+                } else {
+                    conta.sacar(valor);
+                    conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.SAIDA));
+                    ultimaMensagem = "Saque realizado!";
+                }
+            } catch (IllegalArgumentException e) {
+                ultimaMensagem = "Saque recusado: valor inválido.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handlePix(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                double valor = valorPositivo(exchange);
+                if (valor > conta.getSaldo()) {
+                    ultimaMensagem = "PIX recusado: saldo insuficiente.";
+                } else {
+                    // A implementação original de fazerPix credita apenas o destino.
+                    // O débito da origem é efetuado aqui, sem alterar Conta.
+                    conta.fazerPix(poupanca, valor);
+                    conta.setSaldo(-valor);
+                    conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.SAIDA));
+                    poupanca.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.ENTRADA));
+                    ultimaMensagem = "PIX enviado à poupança!";
+                }
+            } catch (IllegalArgumentException e) {
+                ultimaMensagem = "PIX recusado: valor inválido.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handleEmprestimo(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                double valor = valorPositivo(exchange);
+                conta.requisitarEmprestimo(valor);
+                conta.setSaldo(valor);
+                conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.ENTRADA));
+                ultimaMensagem = "Empréstimo solicitado!";
+            } catch (IllegalArgumentException e) {
+                ultimaMensagem = "Empréstimo recusado: valor inválido.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handlePagarEmprestimo(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                double valor = valorPositivo(exchange);
+                if (valor > conta.getSaldo() || valor > conta.getDividaDeEmprestimo()) {
+                    ultimaMensagem = "Pagamento recusado: saldo ou dívida insuficiente.";
+                } else {
+                    conta.pagarParcelaDeEmprestimo(valor);
+                    conta.setSaldo(-valor);
+                    conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.SAIDA));
+                    ultimaMensagem = "Parcela de empréstimo paga!";
+                }
+            } catch (IllegalArgumentException e) {
+                ultimaMensagem = "Pagamento recusado: valor inválido.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handleDepositarPoupanca(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                double valor = valorPositivo(exchange);
+                poupanca.depositar(valor);
+                poupanca.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.ENTRADA));
+                ultimaMensagem = "Depósito na poupança realizado!";
+            } catch (IllegalArgumentException e) {
+                ultimaMensagem = "Depósito na poupança recusado: valor inválido.";
+            }
+        }
+        redirecionarParaInicio(exchange);
+    }
+
+    private void handleRendimentoPoupanca(HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            poupanca.acrescentarRendimento();
+            ultimaMensagem = "Rendimento da poupança processado conforme a implementação atual.";
+        }
+        redirecionarParaInicio(exchange);
+    }
+
     private String gerarHtml() {
         return """
                 <!DOCTYPE html>
@@ -189,6 +320,44 @@ public class WinxBankWebServer {
                     </form>
 
                     <hr>
+                    <h3>Operações da Conta Corrente</h3>
+                    <form method="POST" action="/depositar">
+                        <input name="valor" placeholder="Valor do depósito">
+                        <button type="submit">Depositar</button>
+                    </form>
+                    <form method="POST" action="/sacar">
+                        <input name="valor" placeholder="Valor do saque">
+                        <button type="submit">Sacar</button>
+                    </form>
+                    <form method="POST" action="/pix">
+                        <input name="valor" placeholder="Valor do PIX para poupança">
+                        <button type="submit">Enviar PIX</button>
+                    </form>
+                    <form method="POST" action="/emprestimo">
+                        <input name="valor" placeholder="Valor do empréstimo">
+                        <button type="submit">Solicitar empréstimo</button>
+                    </form>
+                    <form method="POST" action="/pagar-emprestimo">
+                        <input name="valor" placeholder="Valor da parcela">
+                        <button type="submit">Pagar empréstimo</button>
+                    </form>
+                    <p>Dívida de empréstimo: R$ <span id="divida">%s</span></p>
+                    <h3>Conta Poupança</h3>
+                    <p>Saldo Poupança: R$ <span id="saldo-poupanca">%s</span></p>
+                    <p>Despesas do Banco: R$ <span id="despesas">%s</span></p>
+                    <form method="POST" action="/depositar-poupanca">
+                        <input name="valor" placeholder="Depósito na poupança">
+                        <button type="submit">Depositar na poupança</button>
+                    </form>
+                    <form method="POST" action="/rendimento-poupanca">
+                        <button type="submit">Aplicar rendimento da poupança</button>
+                    </form>
+                    <h3>Extrato da Conta Corrente</h3>
+                    <pre>%s</pre>
+                    <h3>Informe de Rendimento da Poupança</h3>
+                    <pre>%s</pre>
+
+                    <hr>
                     <h3>Gestão de Clientes</h3>
                     <form method="POST" action="/cadastrar-cliente">
                         <input id="input-nome" name="nome" type="text" placeholder="Nome do cliente">
@@ -205,8 +374,24 @@ public class WinxBankWebServer {
                 String.format(Locale.US, "%.2f", conta.getSaldo()),
                 String.format(Locale.US, "%.2f", cartaoCredito.getFatura()),
                 String.format(Locale.US, "%.2f", Banco.getInstancia().getReceitas()),
+                String.format(Locale.US, "%.2f", conta.getDividaDeEmprestimo()),
+                String.format(Locale.US, "%.2f", poupanca.getSaldo()),
+                String.format(Locale.US, "%.2f", Banco.getInstancia().getDespesas()),
+                descreverMovimentacoes(conta.getExtrato()),
+                descreverMovimentacoes(poupanca.getInformeRendimento()),
                 infoCliente
         );
+    }
+
+    private String descreverMovimentacoes(java.util.List<Movimentacao> movimentos) {
+        StringBuilder texto = new StringBuilder();
+        for (Movimentacao movimento : movimentos) {
+            texto.append(movimento.getMesAtual()).append(" - ")
+                 .append(movimento.getTipoDaMovimentacao()).append(": R$ ")
+                 .append(String.format(Locale.US, "%.2f", movimento.getDinheiroMovimentado()))
+                 .append("\n");
+        }
+        return texto.length() == 0 ? "Nenhuma movimentação." : texto.toString();
     }
 
     private Map<String, String> lerFormulario(HttpExchange exchange) throws IOException {

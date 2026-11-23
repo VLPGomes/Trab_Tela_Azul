@@ -36,22 +36,35 @@ class ContaTest {
     }
     
     @Test
-    void testPagarParcelaEmprestimo() {
+    void testPagarParcelaDeEmprestimo() {
         conta.pagarParcelaDeEmprestimo(200.0);
-        assertEquals(300.0, conta.getDividaDeEmprestimo());
+        assertAll(
+        	() -> assertEquals(300.0, conta.getDividaDeEmprestimo(), 0.001),
+        	() -> assertEquals(800.0, conta.getSaldo(), 0.001)
+        );
     }
     
     @Test
     void testRequisitarEmprestimo() {
         conta.requisitarEmprestimo(1000.0);
-        assertEquals(1500.0, conta.getDividaDeEmprestimo());
+        assertAll(
+        	() -> assertEquals(1500.0, conta.getDividaDeEmprestimo(), 0.001),
+        	() -> assertEquals(2000.0, conta.getSaldo(), 0.001)
+        );
     }
     
     @Test
     void testCobrarJurosEmprestimo() {
         conta.cobrarJurusEmprestimo();
-        double dividaEsperada = 500.0 - (500.0 / 12.75);
-        assertEquals(dividaEsperada, conta.getDividaDeEmprestimo(), 0.000001);
+        assertEquals(563.75, conta.getDividaDeEmprestimo(), 0.001);
+    }
+    
+    @Test
+    void testCbrarJurosEmprestimoDuasVezes() {
+        conta.cobrarJurusEmprestimo();
+        assertEquals(563.75, conta.getDividaDeEmprestimo(), 0.001);
+        conta.cobrarJurusEmprestimo();
+        assertEquals(635.628125, conta.getDividaDeEmprestimo(), 0.001);
     }
     
     @Test
@@ -164,6 +177,70 @@ class ContaTest {
         	() -> assertEquals(2, conta.getExtrato().size()),
             () -> assertSame(entrada, conta.getExtrato().get(0)),
             () -> assertSame(saida, conta.getExtrato().get(1))
+        );
+    }
+    
+    @Test
+    void testPagarParcelaMaiorQueDivida() {
+        assertThrows(IllegalArgumentException.class, () -> conta.pagarParcelaDeEmprestimo(600.0));
+        assertAll(
+        	() -> assertEquals(500.0, conta.getDividaDeEmprestimo(), 0.001),
+        	() -> assertEquals(1000.0, conta.getSaldo(), 0.001)
+        );
+    }
+    
+    @Test
+    void testPagarParcelaEmprestimoValorZero() {
+        conta.pagarParcelaDeEmprestimo(0.0);
+        assertEquals(500.0, conta.getDividaDeEmprestimo());
+    }
+    
+    @Test
+    void testPagarParcelaEmprestimoNegativo() {
+        assertThrows(IllegalArgumentException.class, () -> conta.pagarParcelaDeEmprestimo(-100.0));
+    }
+    
+    @Test
+    void testRequisitarEmprestimoValorZero() {
+        conta.requisitarEmprestimo(0.0);
+        assertEquals(500.0, conta.getDividaDeEmprestimo());
+    }
+    
+    @Test
+    void testRequisitarEmprestimoNegativo() {
+        assertThrows(IllegalArgumentException.class, () -> conta.requisitarEmprestimo(-100.0));
+    }
+    
+    @Test
+    void testSacarTodoSaldo() {
+        conta.sacar(1000.0);
+        assertEquals(0.0, conta.getSaldo());
+    }
+    
+    @Test
+    void testDepositosSucessivos() {
+        conta.depositar(100.0);
+        conta.depositar(200.0);
+        conta.depositar(300.0);
+        assertEquals(1600.0, conta.getSaldo());
+    }
+    
+    @Test
+    void testPixComTodoSaldo() {
+        Conta contaDestino = new Conta(456, 500.0, null, 0.0) {
+            @Override
+            public void comprar(double valor) {
+                saldo -= valor;
+            }
+            @Override
+            public void movimentacaoBancaria(double valor) {
+                saldo += valor;
+            }
+        };
+        conta.fazerPix(contaDestino, 1000.0);
+        assertAll(
+            () -> assertEquals(0.0, conta.getSaldo()),
+            () -> assertEquals(1500.0, contaDestino.getSaldo())
         );
     }
 }
