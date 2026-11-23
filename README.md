@@ -24,6 +24,7 @@ Repositório do grupo Tela Azul para o trabalho prático da disciplina de Qualid
 - **Relatórios de utilização de técnicas Funcional, Estrutural e Baseada em Defeitos:** [João Victor (CartaoCredito.java)](https://docs.google.com/document/d/100JvwpEPEaAYYATW6yy2Z-PnM8fqqdeNlNTKp-oroWc/edit?usp=sharing)
 - **Relatórios de inspeção do código-fonte:** [João Victor (CartaoCredito.java e Banco.java)](https://docs.google.com/document/d/1wFG-GTlbaeUA6yRpjKyRNDRHjQEvhFTJ-IKTkYXH3Ys/edit?usp=sharing)
 - **Relatório Resumo de Testes:** [Marcello Bimbatti Mazzochi (Classe RegistroDeClientes)](https://docs.google.com/document/d/1EgyZKHwM_LwszVowrUK35AMI7ZQ2D_NzgWNwCpwXvMs/edit?usp=sharing)
+- **Relatório Alterações Segunda Entrega:** [Marcello Bimbatti Mazzochi (Relatório Segunda Entrega)](https://docs.google.com/document/d/1-lbosNWo7tAddLv_PguWVRkgaeJ3oF110GKSeGgqZvY/edit?usp=drivesdk)
 
 ---
 
