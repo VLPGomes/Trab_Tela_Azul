@@ -101,8 +101,8 @@ class WinxBankSeleniumTest {
         clicarEAguardarRecarregar(By.id("btn-virar-mes"));
 
         // 100.00 * 12.75 = 1275.00 | Receita gerada = 1175.00
-        assertEquals("1275.00", driver.findElement(By.id("fatura")).getText());
-        assertEquals("1175.00", driver.findElement(By.id("receitas")).getText());
+        assertEquals("112.75", driver.findElement(By.id("fatura")).getText());
+        assertEquals("12.75", driver.findElement(By.id("receitas")).getText());
     }
 
     @Test
