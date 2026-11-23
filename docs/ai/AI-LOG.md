@@ -111,3 +111,23 @@
 **Resultado**: A ferramenta adaptou o servidor web (`WinxBankWebServer.java`) com endpoints de gestão de clientes sem bloqueio de `Scanner(System.in)` e gerou o teste de sistema `ClienteSeleniumTest.java` . \
 **Decisão**: Aceitei a solução ajustando as rotas HTML para o padrão `formaction` já usado no servidor do grupo e definindo a porta dedicada `8086` para evitar conflito com a porta `8085` do `WinxBankSeleniumTest`. 
 **Validação**: Testei a página web do WinxBankWebServer para confirmar que os formulários enviam os dados corretamente para o RegistroDeClientes sem travar. Também conferi se as portas 8085 e 8086 não interferem uma na outra e medi a velocidade de resposta do servidor de acordo com a meta da ISO/IEC 25010.
+
+11.\
+**Informação**: Configuração do Maven para cobertura (JaCoCo), testes de mutação (PITest) e estruturação do relatório de técnicas de teste \
+**Responsável**: João Victor \
+**Atividade**: Testes estruturais (JaCoCo), testes baseados em defeitos (PITest) e troubleshooting de build \
+**Ferramenta**: Gemini \
+**Prompt/instrução**: "Me ajude a configurar e executar o JaCoCo e o PITest via Maven para a classe CartaoCredito, resolver erros de compilação/geração de relatório e estruturar o relatório de técnicas de teste." \
+**Resultado**: A ferramenta forneceu os comandos filtrados do Maven (-Dtest, -DtargetClasses, mvn jacoco:report), orientações para limpeza de cache de build (mvn clean test) e estruturação das seções do relatório. \
+**Decisão**: Configurei os plugins no pom.xml, executei as análises de cobertura e mutação e redigi o relatório consolidando as técnicas funcional, estrutural e baseada em defeitos. \
+**Validação**: Conferência dos relatórios HTML gerados localmente (target/site/jacoco e target/pit-reports), verificação das métricas reais de linhas/mutantes e teste dos comandos em cópia limpa do repositório.
+
+12.\
+**Informação**: Apoio na inspeção de código-fonte e refatoração de CartaoCredito.java e Banco.java \
+**Responsável**: João Victor \
+**Atividade**: Inspeção de código-fonte e manutenção preventiva \
+**Ferramenta**: Gemini \
+**Prompt/instrução**: "Me ajude a analisar os apontamentos de inspeção de código em CartaoCredito.java e Banco.java e a documentar o relatório de inspeção." \
+**Resultado**: A ferramenta auxiliou na interpretação dos alertas de qualidade/boas práticas e na organização do relatório de inspeção com o antes e depois das melhorias. \
+**Decisão**: Apliquei apenas as refatorações pertinentes sem alterar as regras de negócio e documentei os apontamentos no Relatório de Inspeção do código-fonte. \
+**Validação**: Reexecução completa dos testes unitários e de integração da classe CartaoCredito após as alterações, garantindo 100% de aprovação sem regressões. 
