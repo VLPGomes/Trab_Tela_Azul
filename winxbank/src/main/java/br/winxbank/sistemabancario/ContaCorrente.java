@@ -1,6 +1,8 @@
 package br.winxbank.sistemabancario;
 import java.util.Scanner;
 
+import br.winxbank.exception.ValueIsHigherThanBalanceException;
+
 /**
  * @author Dani
  * Esta classe é responsável por representar uma entidade ContaCorrente.
@@ -27,6 +29,15 @@ public class ContaCorrente extends Conta implements OperacoesAutomaticas{
      * @param valor
      */
     public void pagarFatura(double valor){
+    	if (valor <= 0) {
+    		throw new IllegalArgumentException("O valor do pagamento deve ser maior que zero.");
+    	}
+    	else if (valor > this.saldo) {
+    		throw new ValueIsHigherThanBalanceException();
+    	}
+    	else if (valor > this.cartaoCredito.getFatura()) {
+    		throw new IllegalArgumentException("O valor do pagamento deve ser menor ou igual ao valor da fatura.");
+    	}
         this.saldo-=valor;
         this.cartaoCredito.setFatura(-valor);
 

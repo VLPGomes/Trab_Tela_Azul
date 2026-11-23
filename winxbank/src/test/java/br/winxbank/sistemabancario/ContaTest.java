@@ -60,7 +60,7 @@ class ContaTest {
     }
     
     @Test
-    void testCbrarJurosEmprestimoDuasVezes() {
+    void testCobrarJurosEmprestimoDuasVezes() {
         conta.cobrarJurusEmprestimo();
         assertEquals(563.75, conta.getDividaDeEmprestimo(), 0.001);
         conta.cobrarJurusEmprestimo();
@@ -191,8 +191,7 @@ class ContaTest {
     
     @Test
     void testPagarParcelaEmprestimoValorZero() {
-        conta.pagarParcelaDeEmprestimo(0.0);
-        assertEquals(500.0, conta.getDividaDeEmprestimo());
+    	assertThrows(IllegalArgumentException.class, () -> conta.pagarParcelaDeEmprestimo(0.0));
     }
     
     @Test
@@ -202,8 +201,7 @@ class ContaTest {
     
     @Test
     void testRequisitarEmprestimoValorZero() {
-        conta.requisitarEmprestimo(0.0);
-        assertEquals(500.0, conta.getDividaDeEmprestimo());
+    	assertThrows(IllegalArgumentException.class, () -> conta.requisitarEmprestimo(0.0));
     }
     
     @Test

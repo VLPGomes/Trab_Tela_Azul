@@ -24,7 +24,7 @@ public class Cartao{
      * @param valor
      */
     public void debitar(Conta conta, double valor){
-        conta.setSaldo(-valor);
+        conta.setSaldo(conta.getSaldo() - valor);
     }
 
     public int getNumero() {

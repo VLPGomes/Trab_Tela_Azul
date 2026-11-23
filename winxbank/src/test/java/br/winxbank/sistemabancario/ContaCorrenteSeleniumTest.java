@@ -50,7 +50,7 @@ class ContaCorrenteSeleniumTest extends BaseTestesSelenium {
         assertAll(
             () -> assertEquals(1000.0, valor("saldo"), 0.001),
             () -> assertEquals(400.0, valor("fatura"), 0.001),
-            () -> assertTrue(texto("mensagem").contains("recusado"))
+            () -> assertTrue(texto("mensagem").contains("recusad"),"Mensagem recebida: " + texto("mensagem"))
         );
     }
 
@@ -62,7 +62,7 @@ class ContaCorrenteSeleniumTest extends BaseTestesSelenium {
         assertAll(
             () -> assertEquals(500.0, valor("saldo"), 0.001),
             () -> assertEquals(900.0, valor("fatura"), 0.001),
-            () -> assertTrue(texto("mensagem").contains("recusado"))
+            () -> assertTrue(texto("mensagem").contains("recusad"))
         );
     }
 

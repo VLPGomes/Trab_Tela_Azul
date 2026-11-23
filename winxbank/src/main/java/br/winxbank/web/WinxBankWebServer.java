@@ -1,5 +1,6 @@
 package br.winxbank.web;
 
+import br.winxbank.exception.ValueIsHigherThanBalanceException;
 import br.winxbank.sistemabancario.Banco;
 import br.winxbank.sistemabancario.Cartao;
 import br.winxbank.sistemabancario.CartaoCredito;
@@ -96,11 +97,16 @@ public class WinxBankWebServer {
 
     private void handlePagarFatura(HttpExchange exchange) throws IOException {
         if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            Map<String, String> params = lerFormulario(exchange);
-            double valor = Double.parseDouble(params.getOrDefault("valor", "0"));
-
-            conta.pagarFatura(valor);
-            ultimaMensagem = "Pagamento de fatura realizado!";
+        	try {
+        		Map<String, String> params = lerFormulario(exchange);
+        		double valor = Double.parseDouble(params.getOrDefault("valor", "0"));
+        		conta.pagarFatura(valor);
+        		ultimaMensagem = "Pagamento de fatura realizado!";
+        	} catch(IllegalArgumentException e){
+        		ultimaMensagem = "Pagamento recusado: Valor inválido";
+        	} catch(ValueIsHigherThanBalanceException v) {
+        		ultimaMensagem = "Pagamento recusado: Valor maior que o saldo atual";
+        	}
         }
         redirecionarParaInicio(exchange);
     }
@@ -215,10 +221,7 @@ public class WinxBankWebServer {
                 if (valor > conta.getSaldo()) {
                     ultimaMensagem = "PIX recusado: saldo insuficiente.";
                 } else {
-                    // A implementação original de fazerPix credita apenas o destino.
-                    // O débito da origem é efetuado aqui, sem alterar Conta.
                     conta.fazerPix(poupanca, valor);
-                    conta.setSaldo(-valor);
                     conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.SAIDA));
                     poupanca.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.ENTRADA));
                     ultimaMensagem = "PIX enviado à poupança!";
@@ -235,7 +238,6 @@ public class WinxBankWebServer {
             try {
                 double valor = valorPositivo(exchange);
                 conta.requisitarEmprestimo(valor);
-                conta.setSaldo(valor);
                 conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.ENTRADA));
                 ultimaMensagem = "Empréstimo solicitado!";
             } catch (IllegalArgumentException e) {
@@ -253,7 +255,6 @@ public class WinxBankWebServer {
                     ultimaMensagem = "Pagamento recusado: saldo ou dívida insuficiente.";
                 } else {
                     conta.pagarParcelaDeEmprestimo(valor);
-                    conta.setSaldo(-valor);
                     conta.setExtrato(new Movimentacao(valor, Movimentacao.TipoDaMovimentacao.SAIDA));
                     ultimaMensagem = "Parcela de empréstimo paga!";
                 }

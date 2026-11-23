@@ -126,7 +126,7 @@ public class CartaoCredito extends Cartao implements OperacoesAutomaticas{
 
         if (!this.faturaPaga && this.fatura > 0 && virouMesOuAno){
             double faturaAnterior = this.fatura;
-            this.fatura *= taxaJurus;
+            this.fatura += this.fatura * taxaJurus/100;
             this.indexMesDaFatura = mesAtual; // [Alteração] Atualiza o mês de referência para evitar cobrança duplicada no mesmo mês
             movimentacaoBancaria(this.fatura - faturaAnterior);
         }

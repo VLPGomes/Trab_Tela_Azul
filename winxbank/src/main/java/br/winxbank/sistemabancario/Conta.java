@@ -1,5 +1,6 @@
 package br.winxbank.sistemabancario;
 
+import br.winxbank.exception.ValueIsHigherThanBalanceException;
 import br.winxbank.geradordedocumentos.ArquivoExtrato;
 
 import java.io.FileNotFoundException;
@@ -54,6 +55,16 @@ public abstract class Conta implements OperacoesAutomaticas{
      * @param valor
      */
     public void pagarParcelaDeEmprestimo(double valor) {
+    	if (valor <= 0) {
+    		throw new IllegalArgumentException("O valor do pagamento deve ser maior que zero.");
+    	}
+    	else if (valor > this.saldo) {
+    		throw new ValueIsHigherThanBalanceException();
+    	}
+    	else if (valor > this.dividaDeEmprestimo) {
+    		throw new IllegalArgumentException("O valor do pagamento deve ser menor ou igual ao valor da dívida.");
+    	}
+    	this.saldo -= valor;
         this.dividaDeEmprestimo -= valor;
     }
 
@@ -63,7 +74,11 @@ public abstract class Conta implements OperacoesAutomaticas{
      * @param valor
      */
     public void requisitarEmprestimo(double valor) {
+    	if (valor <= 0) {
+    		throw new IllegalArgumentException("O valor do empréstimo deve ser maior que zero.");
+    	}
         this.dividaDeEmprestimo += valor;
+        this.saldo += valor;
     }
 
     /**
@@ -71,8 +86,8 @@ public abstract class Conta implements OperacoesAutomaticas{
      */
     public void cobrarJurusEmprestimo(){
         if(this.dividaDeEmprestimo > 0){
-            double resultado = dividaDeEmprestimo / taxaJurus;
-            this.dividaDeEmprestimo -= resultado;
+            double resultado = dividaDeEmprestimo * (taxaJurus/100);
+            this.dividaDeEmprestimo += resultado;
         }
     }
 
@@ -87,6 +102,13 @@ public abstract class Conta implements OperacoesAutomaticas{
      * Método responsável por realizar uma transferência via pix a uma conta.
      */
     public void fazerPix(Conta conta, double valor) {
+    	if (valor <= 0) {
+    		throw new IllegalArgumentException("O valor do PIX deve ser maior que zero.");
+    	}
+    	else if (valor > this.saldo) {
+    		throw new ValueIsHigherThanBalanceException();
+    	}
+    	this.saldo -= valor;
         conta.saldo+=valor;
     }
 
@@ -102,6 +124,12 @@ public abstract class Conta implements OperacoesAutomaticas{
      * @param valor
      */
     public void sacar(double valor) {
+    	if (valor <= 0) {
+    		throw new IllegalArgumentException("O valor do saque deve ser maior que zero.");
+    	}
+    	else if (valor > this.saldo) {
+    		throw new ValueIsHigherThanBalanceException();
+    	}
         this.saldo -= valor;
         System.out.println("Você está sacando o valor de: " + valor);
     }
@@ -111,10 +139,12 @@ public abstract class Conta implements OperacoesAutomaticas{
      * @return valor.
      */
     public double depositar(double valor){
-        setSaldo(valor);
+    	if (valor <= 0) {
+    		throw new IllegalArgumentException("O valor do depósito deve ser maior que zero.");
+    	}
+        setSaldo(this.saldo + valor);
         return valor;
     }
-
 
     public double getSaldo() {
         return saldo;
@@ -137,7 +167,7 @@ public abstract class Conta implements OperacoesAutomaticas{
     }
 
     public void setSaldo(double valor) {
-            this.saldo += valor;
+            this.saldo = valor;
     }
 
     public void setExtrato(Movimentacao movimentacao){

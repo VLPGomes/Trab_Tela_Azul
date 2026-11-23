@@ -58,12 +58,12 @@ public class ContaPoupanca extends Conta implements OperacoesAutomaticas{
      * Método responsável por acrescentar rendimento sobre o saldo contido nesta conta.
      */
     public void acrescentarRendimento(){
-        double rendimentoDesteCaso = this.saldo / rendimentoMensalPoupanca;
-        Movimentacao movimentacao = new Movimentacao(rendimentoDesteCaso-this.saldo, Movimentacao.TipoDaMovimentacao.ENTRADA);
+    	if (this.saldo <= 0) return;
+        double rendimentoDesteCaso = this.saldo * (rendimentoMensalPoupanca/100);
+        Movimentacao movimentacao = new Movimentacao(rendimentoDesteCaso, Movimentacao.TipoDaMovimentacao.ENTRADA);
         this.setInformeRendimento(movimentacao);
         this.saldo += rendimentoDesteCaso;
         movimentacaoBancaria(rendimentoDesteCaso);
-
     }
 
     /**
