@@ -104,10 +104,22 @@ Módulo CartaoCredito (Unitários e Integração)
 mvn clean test "-Dtest=CartaoCreditoTest,CartaoCreditoIntegracaoTest"
 ```
 
-Módulo Conta (Unitários)
+Módulo Conta (Unitários e Sistema)
 
 ```bash
-mvn clean test "-Dtest=ContaTest"
+mvn clean test "-Dtest=ContaTest,ContaSeleniumTest"
+```
+
+Módulo ContaCorrente (Unitários, Integração e Sistema)
+
+```bash
+mvn clean test "-Dtest=ContaCorrenteTest,ContaCorrenteIntegracaoTest, ContaCorrenteSeleniumTest"
+```
+
+Módulo ContaPoupanca (Unitários, Integração e Sistema)
+
+```bash
+mvn clean test "-Dtest=ContaPoupancaTest,ContaPoupancaIntegracaoTest, ContaPoupancaSeleniumTest"
 ```
 
 Módulo RegistroDeClientes e Cliente (Unitários, Mocks, Integração e Sistema)
@@ -195,7 +207,7 @@ mvn test-compile pitest:mutationCoverage "-DtargetClasses=br.winxbank.sistemacli
 | Membro | Responsabilidades |
 |--------|-------------------|
 | João Victor       | [CartaoCredito.java](winxbank/src/test/java/br/winxbank/sistemabancario/CartaoCreditoTest.java) + [Casos de teste manual da Classe CartaoCredito.java](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit?tab=t.0) + [TestLink](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/docs/Teste%20Manual%20TestLink%20CT002%20-%20Realizar%20compra%20com%20Cartao%20de%20cr%C3%A9dito.pdf) + [Plano de Testes](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit)  + [WinxBankSeleniumTest.java](winxbank/src/test/java/br/winxbank/sistema/WinxBankSeleniumTest.java) + [CartaoCreditoIntegracaoTest.java](winxbank/src/test/java/br/winxbank/sistemabancario/integracao/CartaoCreditoIntegracaoTest.java) + [RFs e RNFs - Teste de Sistema](https://docs.google.com/document/d/1sYhnDkzh3YbzbHsEp3F1ZYooMfrO3jZW-jU6qv4AWWA/edit?usp=sharing) + [Análise de Qualidade (ISO 25010)](https://docs.google.com/document/d/17hhLL0Bd4Te45kgPSXmGGxRsbgAk8YM6T4qJXkYfxb0/edit?usp=sharing) + [Relatório de Técnicas de Teste (Classe CartaoCredito)](https://docs.google.com/document/d/100JvwpEPEaAYYATW6yy2Z-PnM8fqqdeNlNTKp-oroWc/edit?usp=sharing) + [Relatório de Inspeção do código-fonte (Classes CartaoCredito e Banco)](https://docs.google.com/document/d/1wFG-GTlbaeUA6yRpjKyRNDRHjQEvhFTJ-IKTkYXH3Ys/edit?usp=sharing)|
-| Vinicius Gomes    | [Conta.java](winxbank/src/test/java/br/winxbank/sistemabancario/ContaTest.java) + [Casos de teste manual da classe Conta.java](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit?tab=t.0) + [Plano de Testes](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit)|
+| Vinicius Gomes    | Conta.java ([Unitários](winxbank/src/test/java/br/winxbank/sistemabancario/ContaTest.java) e [Sistema](winxbank/src/test/java/br/winxbank/sistemabancario/ContaSeleniumTest.java)) + [Casos de teste manual da classe Conta.java](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit?tab=t.0) + [Plano de Testes](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit) + ContaCorrente.java ([Unitários](winxbank/src/test/java/br/winxbank/sistemabancario/ContaCorrenteTest.java), [Integração](winxbank/src/test/java/br/winxbank/sistemabancario/ContaCorrenteIntegracaoTest.java) e [Sistema](winxbank/src/test/java/br/winxbank/sistemabancario/ContaCorrenteSeleniumTest.java)) + ContaPoupanca.java ([Unitários](winxbank/src/test/java/br/winxbank/sistemabancario/ContaPoupancaTest.java), [Integração](winxbank/src/test/java/br/winxbank/sistemabancario/ContaPoupancaIntegracaoTest.java) e [Sistema](winxbank/src/test/java/br/winxbank/sistemabancario/ContaCorrenteSeleniumTest.java)) + [Análise de Qualidade (ISO 25010)](https://docs.google.com/document/d/17hhLL0Bd4Te45kgPSXmGGxRsbgAk8YM6T4qJXkYfxb0/edit?usp=sharing)|
 | Marcello Bimbatti | [RegistroDeClientes.java](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/winxbank/src/test/java/br/winxbank/sistemaclientes/RegistroDeClientesTest.java) + [Casos de teste manual da classe RegistroDeClientes.java](https://docs.google.com/document/d/13xAV0YUfUv9gwO8ZtsbtuWy3olUkobn4wkEHsu-MIl0/edit?tab=t.0) + [Plano de Testes](https://docs.google.com/document/d/1WCm11oAZAqIH7ckfDWwhfKcvYEKneLt2FQv9zj_mc-w/edit) + [ClienteSeleniumTest](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/winxbank/src/test/java/br/winxbank/sistema/ClienteSeleniumTest.java) + [Análise de Qualidade (ISO 25010)](https://docs.google.com/document/d/17hhLL0Bd4Te45kgPSXmGGxRsbgAk8YM6T4qJXkYfxb0/edit?usp=sharing) + [Relatório Resumo de Testes](https://docs.google.com/document/d/1EgyZKHwM_LwszVowrUK35AMI7ZQ2D_NzgWNwCpwXvMs/edit?tab=t.0#heading=h.qxefofplfgvq) + [ClienteContaIntegracaoTest](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/winxbank/src/test/java/br/winxbank/sistemaclientes/ClienteContaIntegracaoTest.java) + [RegistroDeClientesMockTest](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/winxbank/src/test/java/br/winxbank/sistemaclientes/RegistroDeClientesMockTest.java) + [WinxBankSystemTest](https://github.com/VLPGomes/Trab_Tela_Azul/blob/main/winxbank/src/test/java/br/winxbank/sistemaclientes/WinxBankSystemTest.java)|
 
 ---
