@@ -34,9 +34,9 @@ class CartaoCreditoIntegracaoTest {
         
         cartao.cobrarJurus();
 
-        assertEquals(1275.0, cartao.getFatura(), DELTA);
+        assertEquals(112.75, cartao.getFatura(), DELTA);
         
-        assertEquals(1175.0, Banco.getInstancia().getReceitas(), DELTA);
+        assertEquals(12.75, Banco.getInstancia().getReceitas(), DELTA);
         assertEquals(0.0, Banco.getInstancia().getDespesas(), DELTA);
     }
 
@@ -98,8 +98,8 @@ class CartaoCreditoIntegracaoTest {
         cartao.cobrarJurus();
         cartao.cobrarJurus(); // segunda chamada no mesmo mês não deve duplicar juros nem receita
 
-        assertEquals(1275.0, cartao.getFatura(), DELTA);
-        assertEquals(1175.0, Banco.getInstancia().getReceitas(), DELTA);
+        assertEquals(112.75, cartao.getFatura(), DELTA);
+        assertEquals(12.75, Banco.getInstancia().getReceitas(), DELTA);
     }
 
     private void limparEstado() {
